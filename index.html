@@ -140,7 +140,7 @@
 
 <body>
 
-<div id="question">Will you be my Valentine?</div>
+<div id="question">Will you be my Valentine? Dear Sulo!!</div>
 
 <div id="buttons">
     <button id="yes">Yes ❤️</button>
@@ -191,7 +191,14 @@ function createFloatingItem() {
     setTimeout(() => item.remove(), 10000);
 }
 
-setInterval(createFloatingItem, 400);
+// Store interval so we can stop it later
+const floatingInterval = setInterval(createFloatingItem, 400);
+
+// Remove all floating items + stop new ones
+function clearFloatingItems() {
+    clearInterval(floatingInterval);
+    document.querySelectorAll('.float').forEach(el => el.remove());
+}
 
 // ------------------------------
 // YES BUTTON LASER + SMILEY
@@ -199,6 +206,7 @@ setInterval(createFloatingItem, 400);
 const yesBtn = document.getElementById("yes");
 
 yesBtn.addEventListener("click", () => {
+    clearFloatingItems();   // <--- NEW
     fireLaser();
     launchSmiley();
 });
@@ -229,6 +237,7 @@ function launchSmiley() {
     setTimeout(() => smiley.remove(), 4000);
 }
 </script>
+
 
 </body>
 </html>
