@@ -44,10 +44,17 @@
         color: white;
     }
 
+    /* NO BUTTON IS NOW OUTSIDE THE BUTTONS CONTAINER */
     #no {
+        position: absolute;
+        left: 50%;
+        top: 60%;
+        transform: translateX(-50%);
         background: #888;
         color: white;
-        position: absolute;
+        padding: 15px 30px;
+        border-radius: 10px;
+        cursor: pointer;
         z-index: 999999;
         transition: left 0.1s, top 0.1s;
     }
@@ -65,22 +72,55 @@
         100% { transform: translateY(-10vh); }
     }
 
-    /* Laser beam */
+    /* iMessage-style laser from center */
     .laser {
         position: fixed;
         left: 50%;
-        top: 100%;
-        width: 6px;
-        height: 200px;
-        background: linear-gradient(red, yellow);
-        transform: translateX(-50%);
-        animation: laserShoot 0.6s ease-out forwards;
+        top: 50%;
+        width: 4px;
+        height: 0;
+        background: linear-gradient(90deg, red, yellow, white);
+        transform-origin: center;
+        transform: translate(-50%, -50%) scaleY(0);
+        animation: laserBlast 0.4s ease-out forwards;
         z-index: 999999;
     }
 
-    @keyframes laserShoot {
-        0% { top: 100%; opacity: 1; }
-        100% { top: -20%; opacity: 0; }
+    @keyframes laserBlast {
+        0% {
+            transform: translate(-50%, -50%) scaleY(0);
+            opacity: 1;
+            height: 0;
+        }
+        40% {
+            transform: translate(-50%, -50%) scaleY(1);
+            height: 300px;
+            opacity: 1;
+        }
+        100% {
+            transform: translate(-50%, -50%) scaleY(1);
+            height: 600px;
+            opacity: 0;
+        }
+    }
+
+    /* Flash pulse */
+    .flash {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background: white;
+        opacity: 0;
+        animation: flashPulse 0.25s ease-out forwards;
+        z-index: 999998;
+    }
+
+    @keyframes flashPulse {
+        0% { opacity: 0; }
+        40% { opacity: 0.8; }
+        100% { opacity: 0; }
     }
 
     /* Floating smiley */
@@ -100,12 +140,13 @@
 
 <body>
 
-<div id="question">Will you be my Valentine? Dear Sulo!!</div>
+<div id="question">Will you be my Valentine?</div>
 
 <div id="buttons">
     <button id="yes">Yes ❤️</button>
-    <button id="no">No 💔</button>
 </div>
+
+<button id="no">No 💔</button>
 
 <script>
 // ------------------------------
@@ -124,14 +165,6 @@ function moveNoButton() {
 
     let x = Math.random() * maxX;
     let y = Math.random() * maxY;
-
-    // Avoid overlapping the question area
-    const questionTop = window.innerHeight * 0.25;
-    const questionBottom = window.innerHeight * 0.55;
-
-    if (y > questionTop && y < questionBottom) {
-        y = questionBottom + 40;
-    }
 
     noBtn.style.left = x + "px";
     noBtn.style.top = y + "px";
@@ -172,11 +205,15 @@ yesBtn.addEventListener("click", () => {
 
 // Laser effect
 function fireLaser() {
+    const flash = document.createElement("div");
+    flash.classList.add("flash");
+    document.body.appendChild(flash);
+    setTimeout(() => flash.remove(), 300);
+
     const laser = document.createElement("div");
     laser.classList.add("laser");
     document.body.appendChild(laser);
-
-    setTimeout(() => laser.remove(), 700);
+    setTimeout(() => laser.remove(), 500);
 }
 
 // Floating smiley
