@@ -42,10 +42,9 @@
     }
 
     #no {
-        z-index: 9999;
-        background: #888;
-        color: white;
-        position: absolute;
+         position: absolute;
+        z-index: 999999; /* stays above everything */
+        transition: left 0.1s, top 0.1s; /* smooth movement */
     }
 
     .float {
@@ -73,19 +72,32 @@
 // Move "No" button on hover
 const noBtn = document.getElementById("no");
 
-noBtn.addEventListener("mouseover", () => {
+function moveNoButton() {
     const btnWidth = noBtn.offsetWidth;
     const btnHeight = noBtn.offsetHeight;
 
-    const maxX = window.innerWidth - btnWidth - 20;
-    const maxY = window.innerHeight - btnHeight - 20;
+    const padding = 20;
 
-    const x = Math.random() * maxX;
-    const y = Math.random() * maxY;
+    const maxX = window.innerWidth - btnWidth - padding;
+    const maxY = window.innerHeight - btnHeight - padding;
+
+    let x = Math.random() * maxX;
+    let y = Math.random() * maxY;
+
+    // Prevent overlap with the question area (center top)
+    const questionAreaTop = window.innerHeight * 0.25;
+    const questionAreaBottom = window.innerHeight * 0.55;
+
+    if (y > questionAreaTop && y < questionAreaBottom) {
+        y = questionAreaBottom + 40; // push it lower
+    }
 
     noBtn.style.left = x + "px";
     noBtn.style.top = y + "px";
-});
+}
+
+noBtn.addEventListener("mouseover", moveNoButton);
+
 
 
 // Floating hearts, balloons, confetti
